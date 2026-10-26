@@ -1,0 +1,88 @@
+#include <stdio.h>
+
+void showBinary(unsigned int value)
+{
+    int j;
+
+    for (j = 7; j >= 0; j--)
+        printf("%u", (value >> j) & 1);
+}
+
+int main()
+{
+    int dividend, divisor;
+    int remainder = 0;
+    int quotient;
+    int step;
+
+    printf("Enter 8-bit dividend: ");
+    scanf("%d", &dividend);
+
+    printf("Enter 8-bit divisor: ");
+    scanf("%d", &divisor);
+
+    if (dividend < 0 || dividend > 255 ||
+        divisor < 1 || divisor > 255)
+    {
+        printf("Invalid input. Enter values between 0 and 255.\n");
+        return 0;
+    }
+
+    quotient = dividend;
+
+    printf("\n====================================\n");
+    printf(" INPUT INFORMATION\n");
+    printf("====================================\n");
+
+    printf("Dividend : %d (", dividend);
+    showBinary(dividend);
+    printf(")\n");
+
+    printf("Divisor : %d (", divisor);
+    showBinary(divisor);
+    printf(")\n");
+
+    printf("\n====================================\n");
+    printf(" DIVISION PROCESS\n");
+    printf("====================================\n");
+
+    printf("Step\tRemainder\tQuotient\n");
+
+    for (step = 1; step <= 8; step++)
+    {
+        remainder = (remainder << 1) | ((quotient >> 7) & 1);
+
+        quotient = (quotient << 1) & 255;
+
+        remainder = remainder - divisor;
+
+        if (remainder < 0)
+        {
+            remainder = remainder + divisor;
+        }
+        else
+        {
+            quotient = quotient | 1;
+        }
+
+        printf("%d\t", step);
+        showBinary(remainder & 255);
+        printf("\t");
+        showBinary(quotient);
+        printf("\n");
+    }
+
+    printf("\n====================================\n");
+    printf(" FINAL ANSWER\n");
+    printf("====================================\n");
+
+    printf("Quotient = %d (", quotient);
+    showBinary(quotient);
+    printf(")\n");
+
+    printf("Remainder = %d (", remainder);
+    showBinary(remainder & 255);
+    printf(")\n");
+
+    return 0;
+}
