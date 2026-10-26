@@ -1,0 +1,62 @@
+ORG 100h
+
+.DATA
+    msg1 db 'Enter first number (0-9): $'
+    msg2 db 13,10,'Enter second number (0-9): $'
+    num1 db ?
+    num2 db ?
+    sum db ?
+    diff db ?
+    prod db ?
+    quot db ?
+    rem db ?
+
+.CODE
+
+    ; First number
+    mov dx, offset msg1
+    mov ah, 09h
+    int 21h
+
+    mov ah, 01h
+    int 21h
+    sub al, 30h
+    mov num1, al
+
+    ; Second number
+    mov dx, offset msg2
+    mov ah, 09h
+    int 21h
+
+    mov ah, 01h
+    int 21h
+    sub al, 30h
+    mov num2, al
+
+    ; Addition
+    mov al, num1
+    add al, num2
+    mov sum, al
+
+    ; Subtraction
+    mov al, num1
+    sub al, num2
+    mov diff, al
+
+    ; Multiplication
+    mov al, num1
+    mov bl, num2
+    mul bl
+    mov prod, al
+
+    ; Division
+    mov al, num1
+    mov ah, 00h
+    mov bl, num2
+    div bl
+    mov quot, al
+    mov rem, ah
+
+    ; Exit
+    mov ah, 4Ch
+    int 21h
