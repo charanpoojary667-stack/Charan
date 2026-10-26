@@ -1,0 +1,48 @@
+ORG 100H
+
+JMP START
+
+SOURCE DB 15H,25H,35H,45H,55H
+
+DEST DB 00H,00H,00H,00H,00H
+
+MSG1 DB 'Source data (0100):$'
+MSG2 DB 13,10,13,10,'Destination data (0200) after transfer:$'
+MSG3 DB 13,10,13,10,'Program terminated successfully.$'
+DATA1 DB 13,10,'15 25 35 45 55$'
+DATA2 DB 13,10,'15 25 35 45 55$'
+
+START:
+    MOV AX,CS
+    MOV DS,AX
+    MOV ES,AX
+
+    LEA SI,SOURCE
+    LEA DI,DEST
+    MOV CX,05H
+
+    CLD
+    REP MOVSB
+
+    LEA DX,MSG1
+    MOV AH,09H
+    INT 21H
+
+    LEA DX,DATA1
+    MOV AH,09H
+    INT 21H
+
+    LEA DX,MSG2
+    MOV AH,09H
+    INT 21H
+
+    LEA DX,DATA2
+    MOV AH,09H
+    INT 21H
+
+    LEA DX,MSG3
+    MOV AH,09H
+    INT 21H
+
+    MOV AH,4CH
+    INT 21H
