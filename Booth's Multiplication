@@ -1,0 +1,102 @@
+#include <stdio.h>
+
+/* Print 8-bit binary number */
+void binary(int n)
+{
+    int i;
+
+    for (i = 7; i >= 0; i--)
+        printf("%d", (n >> i) & 1);
+}
+
+int main()
+{
+    int M, Q, A = 0, Q_1 = 0;
+    int count;
+    int q0;
+    int result;
+
+    printf("Enter multiplicand (-128 to 127): ");
+    scanf("%d", &M);
+
+    printf("Enter multiplier (-128 to 127): ");
+    scanf("%d", &Q);
+
+    /* Check input */
+    if (M < -128 || M > 127 || Q < -128 || Q > 127)
+    {
+        printf("Invalid input! Enter numbers between -128 and 127.\n");
+        return 0;
+    }
+
+    /* Convert negative numbers to 8-bit 2's complement */
+    if (M < 0)
+        M = M + 256;
+
+    if (Q < 0)
+        Q = Q + 256;
+
+    printf("\nBooth's Algorithm Table\n\n");
+
+    printf("Step\tA\t\tQ\t\tQ-1\tOperation\n");
+    printf("-------------------------------------------------------------\n");
+
+    for (count = 1; count <= 8; count++)
+    {
+        q0 = Q & 1;
+
+        /* Booth's operation */
+        if (q0 == 1 && Q_1 == 0)
+        {
+            A = (A - M) & 255;
+
+            printf("%d\t", count);
+            binary(A);
+            printf("\t");
+            binary(Q);
+            printf("\t%d\tA = A - M\n", Q_1);
+        }
+        else if (q0 == 0 && Q_1 == 1)
+        {
+            A = (A + M) & 255;
+
+            printf("%d\t", count);
+            binary(A);
+            printf("\t");
+            binary(Q);
+            printf("\t%d\tA = A + M\n", Q_1);
+        }
+        else
+        {
+            printf("%d\t", count);
+            binary(A);
+            printf("\t");
+            binary(Q);
+            printf("\t%d\tNo operation\n", Q_1);
+        }
+
+        /* Save Q0 in Q-1 */
+        Q_1 = Q & 1;
+
+        /* Arithmetic right shift of A */
+        if (A & 128)
+            A = (A >> 1) | 128;
+        else
+            A = A >> 1;
+
+        /* Right shift Q and bring A's LSB into Q's MSB */
+        Q = (Q >> 1) | ((A & 1) << 7);
+    }
+
+    /* Combine A and Q to get 16-bit result */
+    result = (A << 8) | Q;
+
+    /* Convert 16-bit 2's complement to decimal */
+    if (result >= 32768)
+        result = result - 65536;
+
+    printf("-------------------------------------------------------------\n");
+    printf("Product = %d\n", result);
+
+    return 0;
+}
