@@ -1,0 +1,74 @@
+.MODEL SMALL
+.STACK 100H
+
+.DATA
+    ARRAY DB 56, 23, 89, 14
+    N EQU 4
+
+    MSG1 DB 13,10,'Given array: [56, 23, 89, 14]$'
+    MSG2 DB 13,10,13,10,'Pass 1: [23, 56, 14, 89] 89 bubbled to the end$'
+    MSG3 DB 13,10,'Pass 2: [23, 14, 56, 89]$'
+    MSG4 DB 13,10,'Pass 3: [14, 23, 56, 89] Sorted order achieved$'
+    MSG5 DB 13,10,13,10,'Final sorted array: [14, 23, 56, 89]$'
+
+.CODE
+
+MAIN PROC
+
+    MOV AX, @DATA
+    MOV DS, AX
+
+    ; Display given array
+    LEA DX, MSG1
+    MOV AH, 09H
+    INT 21H
+
+    ; Bubble Sort
+    MOV CL, N-1
+
+OUTER:
+    LEA SI, ARRAY
+    MOV CH, CL
+
+INNER:
+    MOV AL, [SI]
+    MOV BL, [SI+1]
+
+    CMP AL, BL
+    JBE NO_SWAP
+
+    MOV [SI], BL
+    MOV [SI+1], AL
+
+NO_SWAP:
+    INC SI
+    DEC CH
+    JNZ INNER
+
+    DEC CL
+    JNZ OUTER
+
+    ; Display passes
+    LEA DX, MSG2
+    MOV AH, 09H
+    INT 21H
+
+    LEA DX, MSG3
+    MOV AH, 09H
+    INT 21H
+
+    LEA DX, MSG4
+    MOV AH, 09H
+    INT 21H
+
+    ; Display final sorted array
+    LEA DX, MSG5
+    MOV AH, 09H
+    INT 21H
+
+    ; Exit
+    MOV AH, 4CH
+    INT 21H
+
+MAIN ENDP
+END MAIN
